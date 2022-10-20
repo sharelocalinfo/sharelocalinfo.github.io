@@ -41,6 +41,7 @@
             peer.on('connection', function(connSide) {
                 conn = connSide;
                 conn.on('data', function(data) {
+                    console.log(data.sender + ":" + data.message);
                     $(".area-msg").text(data.sender + ":" + data.message);
                 });
             });
