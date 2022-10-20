@@ -17,12 +17,7 @@
     <script>
         $(document).ready(function() {
 
-            const peer = new Peer('', {
-                host: 'https://sharelocalinfo.github.io',
-                port: '443',
-                path: '/'
-            });
-
+            const peer = new Peer();
             
             var conn = peer.connect($(".current-ip").val());
 
