@@ -20,7 +20,7 @@
             const peer = new Peer();
 
             $("#btn-send").on("click", function() {
-                const conn = peer.connect($(".current-ip").val());
+                const conn = peer.connect($("#freind-id").val());
 
                 conn.on('open', () => {
                     const msgObj = {
