@@ -19,10 +19,10 @@
 
             const peer = new Peer();
             
-            var conn = peer.connect($(".current-ip").val());
+            var conn;
 
             $("#btn-send").on("click", function() {
-                peer.connect($("#freind-id").val());
+                conn = peer.connect($(".current-ip").val());
 
                 conn.on('open', () => {
                     const msgObj = {
@@ -39,7 +39,8 @@
             });
 
             peer.on('connection', function(connSide) {
-                connSide.on('data', function(data) {
+                conn = connSide;
+                conn.on('data', function(data) {
                     $(".area-msg").text(data.sender + ":" + data.message);
                 });
             });
