@@ -38,11 +38,8 @@
                 $("#myId").text(id);
             });
 
-            peer.on('connection', function(conn) {
-                conn.on('open', function() {
-                    console.log('conn open');
-                });
-                conn.on('data', function(data) {
+            peer.on('connection', function(connSide) {
+                connSide.on('data', function(data) {
                     $(".area-msg").text(data.sender + ":" + data.message);
                 });
             });
