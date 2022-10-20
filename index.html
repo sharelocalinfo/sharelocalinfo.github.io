@@ -9,24 +9,37 @@
     <title>ShareFile</title>
 </head>
 <body>
-    <input type="hidden" name="currentIp" id="current-ip" value="connectedok">
+    <label for="current-ip">Id of user: 123812231231232789789</label>
+    <input type="tel" name="currentIp" id="current-ip" value="123812231231232789789">
     <div class="area-msg"></div>
     <input type="text" name="message" id="message" value="Hi There!">
+    <button type="button" id="btn-send" value="send"></button>
     <script>
         $(document).ready(function() {
-            
-            var peer = new Peer();
 
+            const peer = new Peer('', {
+                host: 'https://sharelocalinfo.github.io/',
+                port: '443',
+                path: '/'
+            });
+
+            
             var conn = peer.connect($(".current-ip").val());
-            // on open will be launch when you successfully connect to PeerServer
-            conn.on('open', function() {
-                // here you have conn.id
-                conn.send($("#message").val());
+
+            $(".btn-send").on("click", function() {
+                conn.on('open', () => {
+                    const msgObj = {
+                        sender: $("#current-ip").val(),
+                        message: $("#message").val()
+                    };
+                    conn.send(msgObj);
+                    $("#message").val("");
+                });
             });
 
             peer.on('connection', function(conn) {
                 conn.on('data', function(data) {
-                    $(".area-msg").text(data);
+                    $(".area-msg").text(data.sender + ":" + data.message);
                 });
             });
         })
