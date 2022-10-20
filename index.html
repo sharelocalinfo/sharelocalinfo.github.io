@@ -9,8 +9,8 @@
     <title>ShareFile</title>
 </head>
 <body>
-    <label for="current-ip">Defaul id: 192.168.0.1</label><br>
-    <input type="tel" name="currentIp" id="current-ip" value="192.168.0.1"><br>
+    <h1>Defaul My id: <span id="myId">192.168.0.0</span></h1>
+    <input type="text" id="freind-id" value="192.168.0.1"><br>
     <input type="text" name="message" id="message" value="Hi There!">
     <button type="button" id="btn-send" value="send">Send</button>
     <div class="area-msg"></div>
@@ -27,16 +27,20 @@
             var conn = peer.connect($(".current-ip").val());
 
             $(".btn-send").on("click", function() {
-                peer.connect($("#current-ip").val());
-                
+                peer.connect($("#freind-id").val());
+
                 conn.on('open', () => {
                     const msgObj = {
-                        sender: $("#current-ip").val(),
+                        sender: $("#freind-id").val(),
                         message: $("#message").val()
                     };
                     conn.send(msgObj);
                     $("#message").val("");
                 });
+            });
+
+            peer.on('open', (id) => {
+                $("#myId").text(id);
             });
 
             peer.on('connection', function(conn) {
