@@ -21,7 +21,7 @@
             
             var conn = peer.connect($(".current-ip").val());
 
-            $(".btn-send").on("click", function() {
+            $("#btn-send").on("click", function() {
                 peer.connect($("#freind-id").val());
 
                 conn.on('open', () => {
