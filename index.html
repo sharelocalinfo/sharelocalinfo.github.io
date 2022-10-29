@@ -27,7 +27,7 @@
                 return Math.floor(Math.random() * (max - min)) + min;
             }
 
-            $.getJSON("/app/api/ipTest.json", function(data) {
+            $.getJSON("https://sharelocalinfo.github.io/app/api/ipTest.json", function(data) {
                 var jsonData = JSON.stringify(data, null, 2);
                 ipAddress = jsonData.ipAddress;
                 currentIp = ipAddress + SPLIT_POINT + randomId;
