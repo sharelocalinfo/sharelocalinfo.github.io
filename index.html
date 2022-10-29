@@ -17,7 +17,7 @@
     <script>
         $(document).ready(function() {
             const SPLIT_POINT = "::::::"
-            var peer = null;
+            var peer = new Peer();
             var randomId = getRndInteger(100, 1000);
             var ipAddress = null;
             var idActive = [];
@@ -54,13 +54,14 @@
 
                 if(counter == 100 && idActive.length == 0) {
                     currentIp = ipAddress + SPLIT_POINT + 1;
-                } else {
+                    peer = new Peer(currentIp);
+                    $("#myId").text(currentIp);
+                } else if(counter == 100 && idActive.length != 0) {
                     const nextNumber = idActive[idActive.length - 1] + 1;
                     currentIp = ipAddress + SPLIT_POINT + nextNumber;
+                    peer = new Peer(currentIp);
+                    $("#myId").text(currentIp);
                 }
-
-                peer = new Peer(currentIp);
-                $("#myId").text(currentIp);
             });
 
             $("#btn-send").on("click", function() {
