@@ -38,17 +38,16 @@
                     counter++;
                     const conn = peer.connect(ipAddress + SPLIT_POINT + counter);
 
-                    conn.on('open', (id) => {
-                        conn.send(id);
-                    });
-
-                    peer.on('connection', function(con) {
+                    conn.on('open', function() {
+                        // Receive messages
                         con.on('data', function(data) {
                             if(typeof data == "string" &&  new RegExp('^' + ipAddress + SPLIT_POINT +'[0-9]{1}|[0-9]{3}').test(data)) {
                                 console.log("Connection OK at:" + data);
                                 idActive.push(data.split(SPLIT_POINT)[1]);
                             }
                         });
+                        // Send messages
+                        conn.send(currentIp);
                     });
                 }
 
