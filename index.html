@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/app/jquery.min.js"></script>
-    <script src="/app/peerjs.min.js"></script>
+    <script src="/app/assets/js/jquery.min.js"></script>
+    <script src="/app/assets/js/peerjs.min.js"></script>
     <title>ShareFile</title>
 </head>
 <body>
@@ -16,8 +16,54 @@
     <div class="area-msg"></div>
     <script>
         $(document).ready(function() {
+            const SPLIT_POINT = "::::::"
+            var peer = null;
+            var randomId = getRndInteger(100, 1000);
+            var ipAddress = null;
+            var idActive = [];
+            var currentIp = "";
 
-            const peer = new Peer();
+            function getRndInteger(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
+            $.getJSON("/app/api/ipTest.json", function(data) {
+                var jsonData = JSON.stringify(data, null, 2);
+                ipAddress = jsonData.ipAddress;
+                currentIp = ipAddress + SPLIT_POINT + randomId;
+                peer = new Peer(currentIp);
+                $("#myId").text(currentIp);
+            });
+
+            var counter = 0;
+            while(counter <= 100) {
+                counter++;
+                const conn = peer.connect(ipAddress + SPLIT_POINT + counter);
+
+                conn.on('open', () => {
+                    conn.send(currentIp);
+                });
+
+                peer.on('connection', function(con) {
+                    con.on('data', function(data) {
+                        if(typeof data == "string" &&  new RegExp('^' + ipAddress + SPLIT_POINT +'[0-9]{1}|[0-9]{3}').test(data)) {
+                            console.log("Connection OK at:" + data);
+                            idActive.push(data.split(SPLIT_POINT)[1]);
+                        }
+                    });
+                });
+            }
+
+            if(counter == 100 && idActive.length == 0) {
+                currentIp = ipAddress + SPLIT_POINT + 0;
+                peer = new Peer(currentIp);
+                $("#myId").text(currentIp);
+            } else {
+                const nextNumber = idActive[idActive.length - 1] + 1;
+                currentIp = ipAddress + SPLIT_POINT + nextNumber;
+                peer = new Peer(currentIp);
+                $("#myId").text(currentIp);
+            }
 
             $("#btn-send").on("click", function() {
                 const conn = peer.connect($("#friend-id").val());
@@ -36,8 +82,12 @@
 
             peer.on('connection', function(conn) {
                 conn.on('data', function(data) {
-                    console.log(data.sender + ":" + data.message);
-                    $(".area-msg").text(data.sender + ":" + data.message);
+                    if(typeof data == "string" && new RegExp('^' + ipAddress + SPLIT_POINT +'[0-9]{3}|[0-9]{4}').test(data)) {
+                        conn.send(currentIp);
+                    } else {
+                        console.log(data.sender + ":" + data.message);
+                        $(".area-msg").text(data.sender + ":" + data.message);
+                    }
                 });
             });
         })
