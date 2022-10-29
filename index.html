@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/app/jquery.min.js"></script>
+    <script src="/app/peerjs.min.js"></script>
     <title>ShareFile</title>
 </head>
 <body>
     <h1>Defaul My id: <span id="myId">192.168.0.0</span></h1>
-    <input type="text" id="freind-id" value="192.168.0.1"><br>
+    <input type="text" id="friend-id" value="192.168.0.1"><br>
     <input type="text" name="message" id="message" value="Hi There!">
     <button type="button" id="btn-send" value="send">Send</button>
     <div class="area-msg"></div>
@@ -20,20 +20,18 @@
             const peer = new Peer();
 
             $("#btn-send").on("click", function() {
-                const conn = peer.connect($("#freind-id").val());
+                const conn = peer.connect($("#friend-id").val());
 
-                conn.on('open', () => {
+                conn.on('open', (id) => {
+                    $("#myId").text(id);
+
                     const msgObj = {
-                        sender: $("#freind-id").val(),
+                        sender: $("#friend-id").val(),
                         message: $("#message").val()
                     };
                     conn.send(msgObj);
                     $("#message").val("");
                 });
-            });
-
-            peer.on('open', (id) => {
-                $("#myId").text(id);
             });
 
             peer.on('connection', function(conn) {
