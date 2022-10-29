@@ -28,42 +28,41 @@
             }
 
             $.getJSON("https://sharelocalinfo.github.io/app/api/ipTest.json", function(data) {
-                var jsonData = JSON.stringify(data, null, 2);
-                ipAddress = jsonData.ipAddress;
+                ipAddress = data.ipAddress;
                 currentIp = ipAddress + SPLIT_POINT + randomId;
                 peer = new Peer(currentIp);
                 $("#myId").text(currentIp);
-            });
 
-            var counter = 0;
-            while(counter <= 100) {
-                counter++;
-                const conn = peer.connect(ipAddress + SPLIT_POINT + counter);
+                var counter = 0;
+                while(counter <= 100) {
+                    counter++;
+                    const conn = peer.connect(ipAddress + SPLIT_POINT + counter);
 
-                conn.on('open', () => {
-                    conn.send(currentIp);
-                });
-
-                peer.on('connection', function(con) {
-                    con.on('data', function(data) {
-                        if(typeof data == "string" &&  new RegExp('^' + ipAddress + SPLIT_POINT +'[0-9]{1}|[0-9]{3}').test(data)) {
-                            console.log("Connection OK at:" + data);
-                            idActive.push(data.split(SPLIT_POINT)[1]);
-                        }
+                    conn.on('open', () => {
+                        conn.send(currentIp);
                     });
-                });
-            }
 
-            if(counter == 100 && idActive.length == 0) {
-                currentIp = ipAddress + SPLIT_POINT + 0;
-                peer = new Peer(currentIp);
-                $("#myId").text(currentIp);
-            } else {
-                const nextNumber = idActive[idActive.length - 1] + 1;
-                currentIp = ipAddress + SPLIT_POINT + nextNumber;
-                peer = new Peer(currentIp);
-                $("#myId").text(currentIp);
-            }
+                    peer.on('connection', function(con) {
+                        con.on('data', function(data) {
+                            if(typeof data == "string" &&  new RegExp('^' + ipAddress + SPLIT_POINT +'[0-9]{1}|[0-9]{3}').test(data)) {
+                                console.log("Connection OK at:" + data);
+                                idActive.push(data.split(SPLIT_POINT)[1]);
+                            }
+                        });
+                    });
+                }
+
+                if(counter == 100 && idActive.length == 0) {
+                    currentIp = ipAddress + SPLIT_POINT + 0;
+                    peer = new Peer(currentIp);
+                    $("#myId").text(currentIp);
+                } else {
+                    const nextNumber = idActive[idActive.length - 1] + 1;
+                    currentIp = ipAddress + SPLIT_POINT + nextNumber;
+                    peer = new Peer(currentIp);
+                    $("#myId").text(currentIp);
+                }
+            });
 
             $("#btn-send").on("click", function() {
                 const conn = peer.connect($("#friend-id").val());
