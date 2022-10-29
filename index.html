@@ -51,10 +51,11 @@
                         });
                     });
                 }
+
+                setTimeout(getRes(counter), 5000);
             });
 
-            setTimeout(getRes, 5000);
-            function getRes() {
+            function getRes(counter) {
                 if(counter == 100 && idActive.length == 0) {
                     currentIp = ipAddress + SPLIT_POINT + 1;
                     peer = new Peer(currentIp);
