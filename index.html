@@ -17,11 +17,11 @@
     <script>
         $(document).ready(function() {
             const SPLIT_POINT = "::::::"
-            var peer = new Peer();
-            var randomId = getRndInteger(100, 1000);
-            var ipAddress = null;
-            var idActive = [];
-            var currentIp = "";
+            let peer = new Peer();
+            let randomId = getRndInteger(100, 1000);
+            let ipAddress = null;
+            let idActive = [];
+            let currentIp = "";
 
             function getRndInteger(min, max) {
                 return Math.floor(Math.random() * (max - min)) + min;
@@ -38,8 +38,8 @@
                     counter++;
                     const conn = peer.connect(ipAddress + SPLIT_POINT + counter);
 
-                    conn.on('open', () => {
-                        conn.send(currentIp);
+                    conn.on('open', (id) => {
+                        conn.send(id);
                     });
 
                     peer.on('connection', function(con) {
