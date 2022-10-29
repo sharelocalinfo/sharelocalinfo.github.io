@@ -33,7 +33,7 @@
                 peer = new Peer(currentIp);
                 $("#myId").text(currentIp);
 
-                var counter = 0;
+                let counter = 0;
                 while(counter < 100) {
                     counter++;
                     const conn = peer.connect(ipAddress + SPLIT_POINT + counter);
@@ -51,7 +51,10 @@
                         });
                     });
                 }
+            });
 
+            setTimeout(getRes, 5000);
+            function getRes() {
                 if(counter == 100 && idActive.length == 0) {
                     currentIp = ipAddress + SPLIT_POINT + 1;
                     peer = new Peer(currentIp);
@@ -62,7 +65,7 @@
                     peer = new Peer(currentIp);
                     $("#myId").text(currentIp);
                 }
-            });
+            }
 
             $("#btn-send").on("click", function() {
                 const conn = peer.connect($("#friend-id").val());
