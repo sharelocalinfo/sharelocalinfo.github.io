@@ -34,7 +34,7 @@
                 $("#myId").text(currentIp);
 
                 var counter = 0;
-                while(counter <= 100) {
+                while(counter < 100) {
                     counter++;
                     const conn = peer.connect(ipAddress + SPLIT_POINT + counter);
 
